@@ -9,7 +9,7 @@ namespace DTO
         public string? Description { get; set; }
         public DateTime? Deadline { get; set; }
         public PriorityLevel PriorityLevel { get; set; }
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
     }
     public class TaskResponseDto
     {
