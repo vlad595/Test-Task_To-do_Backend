@@ -36,6 +36,7 @@ namespace Service
             var user = new User
             {
                 Id = Guid.NewGuid(),
+                Name = dto.Name,
                 Email = dto.Email,
                 PasswordHash = passwordHash
             };
