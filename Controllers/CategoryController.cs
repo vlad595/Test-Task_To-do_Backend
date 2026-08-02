@@ -30,6 +30,32 @@ namespace Controllers
             }
             return Ok(result);
         }
+        [HttpGet("/names")]
+        public async Task<IActionResult> GetCategoryNames()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userId = Guid.Parse(userIdClaim);
+
+            var result = await _categoryService.GetAllCategoryNames(userId);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+        [HttpGet("/{catName}")]
+        public async Task<IActionResult> GetOneCategoryByName(string catName)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userId = Guid.Parse(userIdClaim);
+
+            var result = await _categoryService.GetCategoryWithTasks(userId, catName);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
         [HttpPost]
         public async Task<IActionResult> CreateCategory(CategoryCreationDto dto)
         {

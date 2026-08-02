@@ -12,6 +12,8 @@ namespace Service
         Task<int> DeleteCategoryAsync(int categoryId, Guid userId);
         Task<CategoryResponseDto> RenameCategoryAsync(int categoryId, string newName, Guid userId);
         Task<List<CategoryItemResponseDto>> GetAllCategories(Guid userId);
+        Task<CategoryItemResponseDto> GetCategoryWithTasks(Guid userId, string categoryName);
+        Task<List<CategoryResponseDto>> GetAllCategoryNames(Guid userId);
     }
     public class CategoryService : ICategoryService
     {
@@ -29,6 +31,7 @@ namespace Service
             
             var newCategory = new Category
             {
+                Color = dto.color,
                 Name = dto.name,
                 UserId = userId
             };
@@ -71,6 +74,7 @@ namespace Service
                 return new CategoryResponseDto
                 {
                     id = category.Id,
+                    color = category.Color,
                     name = category.Name
                 };
             }
@@ -85,8 +89,40 @@ namespace Service
                 {
                     Id = category.Id,
                     Name = category.Name,
-                    
+                    Color = category.Color,
                     Tasks = category.Tasks.ToList() 
+                })
+                .ToListAsync();
+
+            return categoryItems;
+        }
+        public async Task<CategoryItemResponseDto>? GetCategoryWithTasks(Guid userId, string categoryName)
+        {
+            var category = await _context.Categories.Where(c => c.UserId == userId && c.Name == categoryName)
+                .Select(category => new CategoryItemResponseDto
+                {
+                    Id = category.Id,
+                    Name = category.Name,
+                    Color = category.Color,
+                    Tasks = category.Tasks.ToList()
+                }).FirstOrDefaultAsync();
+            if (category != null)
+            {
+                return category;
+            }
+            return null;
+            
+        }
+        public async Task<List<CategoryResponseDto>> GetAllCategoryNames(Guid userId)
+        {
+            var categoryItems = await _context.Categories
+                .Where(c => c.UserId == userId)
+                .OrderBy(c => c.Id)
+                .Select(category => new CategoryResponseDto
+                {
+                    id = category.Id,
+                    name = category.Name,
+                    color = category.Color
                 })
                 .ToListAsync();
 
