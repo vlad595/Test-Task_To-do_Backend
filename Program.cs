@@ -8,6 +8,14 @@ using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+   options.AddPolicy("AllowAngularApp", policy =>
+   {
+       policy.WithOrigins("https://localhost:4200").AllowAnyHeader().AllowAnyMethod();
+   });
+});
+
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
@@ -62,6 +70,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("AllowAngularApp");
 app.MapGet("/", () => "Hello World!");
 
 app.UseAuthentication();
