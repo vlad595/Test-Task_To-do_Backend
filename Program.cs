@@ -12,7 +12,7 @@ builder.Services.AddCors(options =>
 {
    options.AddPolicy("AllowAngularApp", policy =>
    {
-       policy.WithOrigins("https://localhost:4200").AllowAnyHeader().AllowAnyMethod();
+       policy.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod();
    });
 });
 
@@ -70,12 +70,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseRouting();
+
 app.UseCors("AllowAngularApp");
-app.MapGet("/", () => "Hello World!");
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapGet("/", () => "Hello World!");
 
 app.Run();
