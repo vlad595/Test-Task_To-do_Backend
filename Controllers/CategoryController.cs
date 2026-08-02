@@ -30,7 +30,7 @@ namespace Controllers
             }
             return Ok(result);
         }
-        [HttpGet("/names")]
+        [HttpGet("names")]
         public async Task<IActionResult> GetCategoryNames()
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -43,7 +43,7 @@ namespace Controllers
             }
             return Ok(result);
         }
-        [HttpGet("/{catName}")]
+        [HttpGet("{catName}")]
         public async Task<IActionResult> GetOneCategoryByName(string catName)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
