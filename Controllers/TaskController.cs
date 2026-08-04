@@ -53,6 +53,20 @@ namespace Controllers
 
             return Ok(task);
         }
+        [HttpGet]
+        public async Task<IActionResult> GetAllTasks()
+        {
+            var userId = GetUserId();
+            if (userId == Guid.Empty) return Unauthorized();
+
+            var result = await _taskService.GetAllTasks(userId);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
 
         [HttpGet("category/{categoryId}")]
         public async Task<IActionResult> GetTasksByCategory(int categoryId)

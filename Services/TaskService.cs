@@ -12,6 +12,7 @@ namespace Service
         Task<int> DeleteTaskAsync(Guid taskId, Guid userId);
         Task<List<TaskResponseDto>> GetTasksByCategoryAsync(int categoryId, Guid userId);
         Task<TaskResponseDto> GetTaskAsync(Guid taskId, Guid userId);
+        Task<List<TaskResponseDto>> GetAllTasks(Guid userId);
         Task<TaskResponseDto> CompleteTaskAsync(Guid taskId, Guid userId);
         Task<TaskResponseDto> UpdateTaskAsync(TaskCreationDto dto, Guid taskId, Guid userId);
     }
@@ -45,6 +46,8 @@ namespace Service
                 Title = task.Title,
                 Description = task.Description,
                 Deadline = task.Deadline,
+                PriorityLevel = task.Priority,
+                CategoryId = task.CategoryId,
                 IsCompleted = false  
             };
         }
@@ -75,7 +78,9 @@ namespace Service
                     Title = t.Title,
                     Description = t.Description,
                     Deadline = t.Deadline,
-                    IsCompleted = t.IsCompleted
+                    IsCompleted = t.IsCompleted,
+                    PriorityLevel = t.Priority,
+                    CategoryId = t.CategoryId
                 }).ToListAsync();
         }
         public async Task<TaskResponseDto> GetTaskAsync(Guid taskId, Guid userId)
@@ -93,8 +98,28 @@ namespace Service
                 Title = task.Title,
                 Description = task.Description,
                 Deadline = task.Deadline,
-                IsCompleted = task.IsCompleted
+                IsCompleted = task.IsCompleted,
+                PriorityLevel = task.Priority,
+                CategoryId = task.CategoryId
             };
+        }
+        public async Task<List<TaskResponseDto>> GetAllTasks(Guid userId)
+        {
+            var tasks = await _context.ToDoItems.Where(task => task.UserId == userId)
+                .Select(c => new TaskResponseDto{
+                    Id = c.Id,
+                    Title = c.Title,
+                    Description = c.Description,
+                    Deadline = c.Deadline,
+                    IsCompleted = c.IsCompleted,
+                    PriorityLevel = c.Priority,
+                    CategoryId = c.CategoryId
+                }).ToListAsync();
+            if (tasks == null)
+            {
+                return null;
+            }
+            return tasks;
         }
         public async Task<TaskResponseDto> CompleteTaskAsync(Guid taskId, Guid userId)
         {
@@ -115,7 +140,9 @@ namespace Service
                 Title = task.Title,
                 Description = task.Description,
                 Deadline = task.Deadline,
-                IsCompleted = task.IsCompleted
+                IsCompleted = task.IsCompleted,
+                PriorityLevel = task.Priority,
+                CategoryId = task.CategoryId,
             };
         }
         public async Task<TaskResponseDto> UpdateTaskAsync(TaskCreationDto dto, Guid taskId, Guid userId)
@@ -140,7 +167,9 @@ namespace Service
                 Title = task.Title,
                 Description = task.Description,
                 Deadline = task.Deadline,
-                IsCompleted = task.IsCompleted
+                IsCompleted = task.IsCompleted,
+                CategoryId = task.CategoryId,
+                PriorityLevel = task.Priority
             };
         }
     }
