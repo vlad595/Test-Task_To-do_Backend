@@ -34,6 +34,7 @@ namespace Service
                 Description = taskDto.Description,
                 Deadline = taskDto.Deadline,
                 CategoryId = taskDto.CategoryId,
+                Priority = taskDto.PriorityLevel,
                 UserId = userId,
                 IsCompleted = false
             };
