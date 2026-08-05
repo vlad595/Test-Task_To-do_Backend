@@ -12,8 +12,8 @@ namespace Service
 {
     public interface IAuthService
     {
-        Task<string> RegisterAsync(RegisterDto dto);
-        Task<string> LoginAsync(LoginDto dto);
+        Task<UserResponseDto> RegisterAsync(RegisterDto dto);
+        Task<UserResponseDto> LoginAsync(LoginDto dto);
     }
     public class AuthService : IAuthService
     {
@@ -24,7 +24,7 @@ namespace Service
             _context = context;
             _config = config;
         }
-        public async Task<string> RegisterAsync(RegisterDto dto)
+        public async Task<UserResponseDto> RegisterAsync(RegisterDto dto)
         {
             if (await _context.Users.AnyAsync(u => u.Email == dto.Email))
             {
@@ -43,16 +43,29 @@ namespace Service
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
-            return GenerateJwtToken(user);
+
+            return new UserResponseDto
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                Token = GenerateJwtToken(user)
+            };
         }
-        public async Task<string> LoginAsync(LoginDto dto)
+        public async Task<UserResponseDto> LoginAsync(LoginDto dto)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
             if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
             {
                 throw new Exception("Incorrect email or password");
             }
-            return GenerateJwtToken(user);
+            return new UserResponseDto
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                Token = GenerateJwtToken(user)
+            };
         }
         private string GenerateJwtToken(User user)
         {
