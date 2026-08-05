@@ -13,7 +13,7 @@ namespace Service
         Task<List<TaskResponseDto>> GetTasksByCategoryAsync(int categoryId, Guid userId);
         Task<TaskResponseDto> GetTaskAsync(Guid taskId, Guid userId);
         Task<List<TaskResponseDto>> GetAllTasks(Guid userId);
-        Task<TaskResponseDto> CompleteTaskAsync(Guid taskId, Guid userId);
+        Task<TaskResponseDto> ToggleTaskAsync(Guid taskId, Guid userId);
         Task<TaskResponseDto> UpdateTaskAsync(TaskCreationDto dto, Guid taskId, Guid userId);
     }
 
@@ -122,7 +122,7 @@ namespace Service
             }
             return tasks;
         }
-        public async Task<TaskResponseDto> CompleteTaskAsync(Guid taskId, Guid userId)
+        public async Task<TaskResponseDto> ToggleTaskAsync(Guid taskId, Guid userId)
         {
             var task = await _context.ToDoItems.FirstOrDefaultAsync(t => t.Id == taskId && t.UserId == userId);
 
@@ -131,7 +131,7 @@ namespace Service
                 return null;
             }
 
-            task.IsCompleted = true;
+            task.IsCompleted = !task.IsCompleted;
             
             await _context.SaveChangesAsync();
 

@@ -94,13 +94,13 @@ namespace Controllers
             return Ok(updatedTask);
         }
 
-        [HttpPatch("{taskId}/complete")]
+        [HttpPatch("{taskId}/toggle")]
         public async Task<IActionResult> CompleteTask(Guid taskId)
         {
             var userId = GetUserId();
             if (userId == Guid.Empty) return Unauthorized();
 
-            var completedTask = await _taskService.CompleteTaskAsync(taskId, userId);
+            var completedTask = await _taskService.ToggleTaskAsync(taskId, userId);
             
             if (completedTask == null)
             {
