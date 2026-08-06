@@ -12,7 +12,7 @@ builder.Services.AddCors(options =>
 {
    options.AddPolicy("AllowAngularApp", policy =>
    {
-       policy.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod();
+       policy.WithOrigins("http://localhost:4200", "https://test-task-to-do-frontend.vercel.app/login").AllowAnyHeader().AllowAnyMethod();
    });
 });
 
